@@ -13,10 +13,11 @@ public class ChatClient  extends WebSocketClient {
 
     private static String HOST = "localhost";
     private static int PORT = 8887;
+    private static String URI = String.format("ws://%s:%s", HOST, PORT);
 
 
     public ChatClient() throws Exception{
-        super(new URI("ws://localhost:8887"), new Draft_75());
+        super(new URI(URI), new Draft_75());
     }
 
     @Override
@@ -26,7 +27,7 @@ public class ChatClient  extends WebSocketClient {
 
     @Override
     public void onOpen( ServerHandshake handshake ) {
-        // TODO );
+        // TODO
     }
 
     @Override

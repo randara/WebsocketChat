@@ -48,7 +48,7 @@ public class ChatUtils {
                 content = in.getSender() + "is online.";
                 break;
             case ERROR:
-                content = "Something bad happend.";
+                content = "Something bad happened.";
                 break;
             case INVITE:
                 content = in.getSender() + " wants to be in your contacts list.";;
