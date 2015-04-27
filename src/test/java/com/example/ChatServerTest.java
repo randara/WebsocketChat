@@ -144,5 +144,5 @@ public class ChatServerTest {
         Assert.assertEquals(Message.MessageType.INVITE, responses.get(0).getMessageType());
 
     }
-    
+
 }
