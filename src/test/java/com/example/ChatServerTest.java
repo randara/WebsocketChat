@@ -34,7 +34,7 @@ public class ChatServerTest {
 
     @Test
     public void initialConnCountTest() {
-        int totalConn = server.getConnCount();
+        int totalConn = server.getOnlineCount();
         Assert.assertEquals(0, totalConn);
     }
 
@@ -43,7 +43,7 @@ public class ChatServerTest {
 
         server.addOnlineUsers("user01", null);
 
-        Assert.assertEquals(1, server.getConnCount());
+        Assert.assertEquals(1, server.getOnlineCount());
 
         Assert.assertTrue(server.getOnlineUsers().contains("user01"));
 

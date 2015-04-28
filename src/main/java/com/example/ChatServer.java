@@ -6,7 +6,6 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
-import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
 
 import java.lang.Exception;
@@ -71,6 +70,14 @@ public class ChatServer extends WebSocketServer {
         contactsList.remove(userName);
     }
 
+    public ArrayList<String> getContactsList(String userName) {
+        ArrayList<String> contacts = new ArrayList<>();
+        if (!contactsList.isEmpty()) {
+            contacts = (ArrayList<String>) contactsList.get(userName);
+        }
+        return contacts;
+    }
+
     public void addOnlineUsers(String userName, WebSocket conn) {
         users.put(userName, conn);
     }
@@ -79,7 +86,7 @@ public class ChatServer extends WebSocketServer {
         users.remove(userName);
     }
 
-    public int getConnCount() {
+    public int getOnlineCount() {
         return users.size();
     }
 
@@ -143,14 +150,6 @@ public class ChatServer extends WebSocketServer {
         ArrayList<Message> responses = ChatUtils.prepareResponses(msg, receivers);
 
         return responses;
-    }
-
-    public ArrayList<String> getContactsList(String userName) {
-        ArrayList<String> contacts = new ArrayList<>();
-        if (!contactsList.isEmpty()) {
-            contacts = (ArrayList<String>) contactsList.get(userName);
-        }
-        return contacts;
     }
 
 }
