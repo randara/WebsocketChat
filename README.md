@@ -8,6 +8,16 @@ This is an exercise. Implement a simple chat server in Java. Based on WebSocket 
 * Contact lists
 * Presence 
 
+# Compile and run server
+
+```
+mvn clean install
+```
+
+```
+java -jar target/chat-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
 # TODOs
 
 * Persistence
