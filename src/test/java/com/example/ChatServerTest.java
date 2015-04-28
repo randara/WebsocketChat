@@ -158,6 +158,8 @@ public class ChatServerTest {
 
         Assert.assertEquals(0, responses.size());
 
+        Assert.assertEquals(0, server.getContactsList("sender").size());
+
     }
 
     @Test
@@ -176,6 +178,7 @@ public class ChatServerTest {
         Assert.assertEquals("sender is online.", responses.get(0).getContent());
         Assert.assertEquals(Message.MessageType.HELLO, responses.get(0).getMessageType());
 
+        Assert.assertEquals(1, server.getContactsList("sender").size());
     }
 
     @Test
@@ -201,6 +204,8 @@ public class ChatServerTest {
         Assert.assertEquals("sender is online.", responses.get(1).getContent());
         Assert.assertEquals(Message.MessageType.HELLO, responses.get(1).getMessageType());
 
+        Assert.assertEquals(2, server.getContactsList("sender").size());
+
     }
 
     @Test
@@ -210,6 +215,8 @@ public class ChatServerTest {
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
 
         Assert.assertEquals(0, responses.size());
+
+        Assert.assertEquals(0, server.getContactsList("sender").size());
 
     }
 
@@ -228,6 +235,8 @@ public class ChatServerTest {
         Assert.assertEquals("receiver", responses.get(0).getReceiver());
         Assert.assertEquals("sender is offline.", responses.get(0).getContent());
         Assert.assertEquals(Message.MessageType.BYE, responses.get(0).getMessageType());
+
+        Assert.assertEquals(0, server.getContactsList("sender").size());
 
     }
 
@@ -253,6 +262,8 @@ public class ChatServerTest {
         Assert.assertEquals("receiver02", responses.get(1).getReceiver());
         Assert.assertEquals("sender is offline.", responses.get(1).getContent());
         Assert.assertEquals(Message.MessageType.BYE, responses.get(1).getMessageType());
+
+        Assert.assertEquals(0, server.getContactsList("sender").size());
 
     }
 

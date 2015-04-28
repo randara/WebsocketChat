@@ -109,6 +109,7 @@ public class ChatServer extends WebSocketServer {
             case BYE:
                 removeOnlineUsers(msg.getSender());
                 receivers = getContactsList(msg.getSender());
+                removeFromContactsList(msg.getSender());
                 break;
             case HELLO:
                 addOnlineUsers(msg.getSender(), socket);
