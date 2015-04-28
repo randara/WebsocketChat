@@ -246,7 +246,6 @@ public class ChatServerTest {
         server.addToContactsList("sender", "receiver01");
         server.addToContactsList("sender", "receiver02");
 
-
         Message msg = new Message("sender", "", "", Message.MessageType.BYE);
 
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
@@ -281,6 +280,7 @@ public class ChatServerTest {
         Assert.assertEquals(Message.MessageType.ACCEPT, responses.get(0).getMessageType());
 
         Assert.assertEquals(1, server.getContactsList("receiver").size());
+        Assert.assertEquals(1, server.getContactsList("sender").size());
 
     }
 

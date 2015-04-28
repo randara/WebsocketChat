@@ -127,6 +127,7 @@ public class ChatServer extends WebSocketServer {
                 break;
             case ACCEPT:
                 addToContactsList(msg.getReceiver(), msg.getSender());
+                addToContactsList(msg.getSender(), msg.getReceiver());
                 receivers.add(msg.getReceiver());
                 break;
             case DENY:
