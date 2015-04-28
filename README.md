@@ -15,3 +15,5 @@ This is an exercise. Implement a simple chat server in Java. Based on WebSocket 
 * Javascript Client
 * Client tests
 * Integration Tests
+* Auth
+* Security Layer

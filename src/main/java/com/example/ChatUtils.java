@@ -3,21 +3,11 @@ package com.example;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by rafaelandara on 4/27/15.
  */
 public class ChatUtils {
-
-    public static Message unused(String json) {
-
-        Message msg = parseMessage(json);
-        Message reply = new Message();
-
-
-        return reply;
-    }
 
     public static Message parseMessage(String json) {
         Message msg = null;
@@ -42,27 +32,35 @@ public class ChatUtils {
 
         switch (in.getMessageType()) {
             case BYE:
-                content = in.getSender() + "is offline.";
+                content = in.getSender() + " is offline.";
                 break;
             case HELLO:
-                content = in.getSender() + "is online.";
+                content = in.getSender() + " is online.";
                 break;
             case ERROR:
                 content = "Something bad happened.";
                 break;
             case INVITE:
-                content = in.getSender() + " wants to be in your contacts list.";;
+                content = in.getSender() + " wants to be in your contacts list.";
+                break;
+            case ACCEPT:
+                content = in.getSender() + " accepted your invite.";
+                break;
+            case DENY:
+                content = in.getSender() + " denied your invite.";
                 break;
             default:
                 content = in.getContent();
                 break;
         }
 
-        for(String receiver : receivers) {
+        for (String receiver : receivers) {
             temp = new Message(in.getSender(), receiver, content, in.getMessageType());
             out.add(temp);
         }
+
         return out;
+
     }
 
     public static String prepareJson(Message msg) {

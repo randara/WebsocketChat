@@ -22,6 +22,11 @@ public class ChatServerTest {
         server.stop();
     }
 
+    @After
+    public void cleanData() {
+        server.init();
+    }
+
     @Test
     public void baseTest() {
         Assert.assertTrue(true);
@@ -142,6 +147,112 @@ public class ChatServerTest {
         Assert.assertEquals("receiver", responses.get(0).getReceiver());
         Assert.assertEquals("sender wants to be in your contacts list.", responses.get(0).getContent());
         Assert.assertEquals(Message.MessageType.INVITE, responses.get(0).getMessageType());
+
+    }
+
+    @Test
+    public void helloNoContactsMessageTest() {
+        Message msg = new Message("sender", "", "", Message.MessageType.HELLO);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(0, responses.size());
+
+    }
+
+    @Test
+    public void helloSingleContactMessageTest() {
+
+        server.addToContactsList("sender", "receiver");
+
+        Message msg = new Message("sender", "", "", Message.MessageType.HELLO);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(1, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("receiver", responses.get(0).getReceiver());
+        Assert.assertEquals("sender is online.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.HELLO, responses.get(0).getMessageType());
+
+    }
+
+    @Test
+    public void helloMultipleContactsMessageTest() {
+
+        server.addToContactsList("sender", "receiver01");
+        server.addToContactsList("sender", "receiver02");
+
+
+        Message msg = new Message("sender", "", "", Message.MessageType.HELLO);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(2, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("receiver01", responses.get(0).getReceiver());
+        Assert.assertEquals("sender is online.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.HELLO, responses.get(0).getMessageType());
+
+        Assert.assertEquals("sender", responses.get(1).getSender());
+        Assert.assertEquals("receiver02", responses.get(1).getReceiver());
+        Assert.assertEquals("sender is online.", responses.get(1).getContent());
+        Assert.assertEquals(Message.MessageType.HELLO, responses.get(1).getMessageType());
+
+    }
+
+    @Test
+    public void byeNoContactsMessageTest() {
+        Message msg = new Message("sender", "", "", Message.MessageType.BYE);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(0, responses.size());
+
+    }
+
+    @Test
+    public void byeSingleContactMessageTest() {
+
+        server.addToContactsList("sender", "receiver");
+
+        Message msg = new Message("sender", "", "", Message.MessageType.BYE);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(1, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("receiver", responses.get(0).getReceiver());
+        Assert.assertEquals("sender is offline.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.BYE, responses.get(0).getMessageType());
+
+    }
+
+    @Test
+    public void byeMultipleContactsMessageTest() {
+
+        server.addToContactsList("sender", "receiver01");
+        server.addToContactsList("sender", "receiver02");
+
+
+        Message msg = new Message("sender", "", "", Message.MessageType.BYE);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(2, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("receiver01", responses.get(0).getReceiver());
+        Assert.assertEquals("sender is offline.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.BYE, responses.get(0).getMessageType());
+
+        Assert.assertEquals("sender", responses.get(1).getSender());
+        Assert.assertEquals("receiver02", responses.get(1).getReceiver());
+        Assert.assertEquals("sender is offline.", responses.get(1).getContent());
+        Assert.assertEquals(Message.MessageType.BYE, responses.get(1).getMessageType());
 
     }
 

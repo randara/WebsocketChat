@@ -1,9 +1,12 @@
 package com.example;
 
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
 
 import java.lang.Exception;
@@ -18,10 +21,17 @@ public class ChatServer extends WebSocketServer {
 
     private Map<String, WebSocket> users;
 
+    private MultiMap<String, String> contactsList;
+
 
     public ChatServer() {
         super(new InetSocketAddress(PORT));
+        init();
+    }
+
+    public void init() {
         users = new HashMap<>();
+        contactsList = new MultiValueMap<>();
     }
 
     @Override
@@ -33,7 +43,6 @@ public class ChatServer extends WebSocketServer {
 
         for(Message m : responses) {
             WebSocket to = users.get(msg.getReceiver());
-
             to.send(ChatUtils.prepareJson(m));
         }
 
@@ -54,12 +63,20 @@ public class ChatServer extends WebSocketServer {
         // TODO
     }
 
-    public void addOnlineUsers(String username, WebSocket conn) {
-        users.put(username, conn);
+    public void addToContactsList(String userName, String contactName) {
+        contactsList.put(userName, contactName);
     }
 
-    public void removeOnlineUsers(String username) {
-        users.remove(username);
+    public void removeFromContactsList(String userName) {
+        contactsList.remove(userName);
+    }
+
+    public void addOnlineUsers(String userName, WebSocket conn) {
+        users.put(userName, conn);
+    }
+
+    public void removeOnlineUsers(String userName) {
+        users.remove(userName);
     }
 
     public int getConnCount() {
@@ -84,12 +101,6 @@ public class ChatServer extends WebSocketServer {
         return String.join(",", results);
     }
 
-    public ArrayList<String> getContactsByUsername(String username) {
-
-        return null;
-
-    }
-
     public ArrayList<Message> getMessagesToSend(WebSocket socket, Message msg) {
 
         ArrayList<String> receivers = new ArrayList<>();
@@ -97,11 +108,11 @@ public class ChatServer extends WebSocketServer {
         switch (msg.getMessageType()) {
             case BYE:
                 removeOnlineUsers(msg.getSender());
-                receivers = getContactsByUsername(msg.getSender());
+                receivers = getContactsList(msg.getSender());
                 break;
             case HELLO:
                 addOnlineUsers(msg.getSender(), socket);
-                receivers = getContactsByUsername(msg.getSender());
+                receivers = getContactsList(msg.getSender());
                 break;
             case SEARCH:
                 String results = searchContact(msg.getContent());
@@ -111,6 +122,13 @@ public class ChatServer extends WebSocketServer {
                 break;
             case TEXT:
             case INVITE:
+                receivers.add(msg.getReceiver());
+                break;
+            case ACCEPT:
+                addToContactsList(msg.getReceiver(), msg.getSender());
+                receivers.add(msg.getReceiver());
+                break;
+            case DENY:
                 receivers.add(msg.getReceiver());
                 break;
             default:
@@ -123,6 +141,14 @@ public class ChatServer extends WebSocketServer {
         ArrayList<Message> responses = ChatUtils.prepareResponses(msg, receivers);
 
         return responses;
+    }
+
+    public ArrayList<String> getContactsList(String userName) {
+        ArrayList<String> contacts = new ArrayList<>();
+        if (!contactsList.isEmpty()) {
+            contacts = (ArrayList<String>) contactsList.get(userName);
+        }
+        return contacts;
     }
 
 }
