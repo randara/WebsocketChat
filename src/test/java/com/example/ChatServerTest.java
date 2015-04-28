@@ -122,6 +122,9 @@ public class ChatServerTest {
 
     @Test
     public void directMessageTest() {
+
+        server.addToContactsList("sender", "receiver");
+
         Message msg = new Message("sender", "receiver", "Hola", Message.MessageType.TEXT);
 
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
@@ -301,4 +304,18 @@ public class ChatServerTest {
 
     }
 
+    @Test
+    public void invalidDirectMessageTest() {
+        Message msg = new Message("sender", "receiver", "Hola", Message.MessageType.TEXT);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(1, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("receiver", responses.get(0).getReceiver());
+        Assert.assertEquals("Something bad happened.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.ERROR, responses.get(0).getMessageType());
+
+    }
 }

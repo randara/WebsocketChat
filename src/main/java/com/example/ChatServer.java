@@ -129,6 +129,9 @@ public class ChatServer extends WebSocketServer {
                 msg.setSender(msg.getReceiver());
                 break;
             case TEXT:
+                if(!getContactsList(msg.getSender()).contains(msg.getReceiver())){
+                    msg.setMessageType(Message.MessageType.ERROR);
+                }
             case INVITE:
                 receivers.add(msg.getReceiver());
                 break;
