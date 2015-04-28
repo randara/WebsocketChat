@@ -21,6 +21,8 @@ java -jar target/chat-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 A Chrome WebSocket plugin can be used as a client. Tested with https://github.com/hakobera/Simple-WebSocket-Client
 
+URL = ws://localhost:8887
+
 # Messages Examples
 
 ## HELLO
