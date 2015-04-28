@@ -9,19 +9,26 @@ import java.util.ArrayList;
  */
 public class ChatUtils {
 
+
+    //  Maps JSON received message into POJO
+
     public static Message parseMessage(String json) {
-        Message msg = null;
+        Message msg;
         try {
             ObjectMapper mapper = new ObjectMapper();
             msg = mapper.readValue(json, Message.class);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            msg = null;
+            //e.printStackTrace();
         }
 
         return msg;
 
     }
+
+
+     //  Generates a List of POJO Message to be delivered as responses
 
     public static ArrayList<Message> prepareResponses(Message in, ArrayList<String> receivers){
 
@@ -63,6 +70,8 @@ public class ChatUtils {
 
     }
 
+    // Maps POJO message into JSON to be delivered.
+
     public static String prepareJson(Message msg) {
         String jsonMessage = "";
 
@@ -71,7 +80,8 @@ public class ChatUtils {
             jsonMessage = mapper.writeValueAsString(msg);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error preparing JSON - JACKSON.");
+            //e.printStackTrace();
         }
 
         return jsonMessage;

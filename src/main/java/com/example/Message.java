@@ -3,6 +3,9 @@ package com.example;
 /**
  * Created by rafaelandara on 4/27/15.
  */
+
+// Basic chat protocol message.
+
 public class Message {
 
     public enum MessageType {
@@ -55,6 +58,10 @@ public class Message {
 
     public void setMessageType(MessageType type) {
         this.messageType = type;
+    }
+
+    public boolean isEmpty() {
+        return this.sender == null || this.receiver == null || this.messageType == null;
     }
 
 }

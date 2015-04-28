@@ -28,21 +28,32 @@ public class ChatServer extends WebSocketServer {
         init();
     }
 
+    // Initialize user control structure on server. Needs to be persisted.
+
     public void init() {
         users = new HashMap<>();
         contactsList = new MultiValueMap<>();
     }
 
+    // Message handler. Important.
+
     @Override
     public void onMessage(WebSocket socket, String json) {
 
         Message msg = ChatUtils.parseMessage(json);
-
         ArrayList<Message> responses = getMessagesToSend(socket, msg);
 
-        for(Message m : responses) {
-            WebSocket to = users.get(msg.getReceiver());
-            to.send(ChatUtils.prepareJson(m));
+        for (Message m : responses) {
+
+            WebSocket to;
+
+            if (m.getReceiver() == null || !contactsList.containsValue(m.getReceiver())) {
+                to = socket;
+            }
+            else {
+                 to = users.get(m.getReceiver());
+            }
+                to.send(ChatUtils.prepareJson(m));
         }
 
     }
@@ -62,6 +73,8 @@ public class ChatServer extends WebSocketServer {
         // TODO
     }
 
+    // Contacts List methods
+
     public void addToContactsList(String userName, String contactName) {
         contactsList.put(userName, contactName);
     }
@@ -77,6 +90,8 @@ public class ChatServer extends WebSocketServer {
         }
         return contacts;
     }
+
+    // Online users (connections) methods
 
     public void addOnlineUsers(String userName, WebSocket conn) {
         users.put(userName, conn);
@@ -94,6 +109,8 @@ public class ChatServer extends WebSocketServer {
         return users.keySet();
     }
 
+    // Search in online users. Need to search on persisted data.
+
     public String searchContact(String searching) {
         ArrayList<String> results = new ArrayList<>();
 
@@ -108,7 +125,14 @@ public class ChatServer extends WebSocketServer {
         return String.join(",", results);
     }
 
+    // Message payload assembly
+
     public ArrayList<Message> getMessagesToSend(WebSocket socket, Message msg) {
+
+        if(msg == null || msg.isEmpty()){
+            msg = new Message();
+            msg.setMessageType(Message.MessageType.ERROR);
+        }
 
         ArrayList<String> receivers = new ArrayList<>();
 
@@ -126,7 +150,7 @@ public class ChatServer extends WebSocketServer {
                 String results = searchContact(msg.getContent());
                 msg.setContent(results);
                 receivers.add(msg.getSender());
-                msg.setSender(msg.getReceiver());
+                msg.setSender("server");
                 break;
             case TEXT:
                 if(!getContactsList(msg.getSender()).contains(msg.getReceiver())){
@@ -146,7 +170,7 @@ public class ChatServer extends WebSocketServer {
             default:
                 msg.setMessageType(Message.MessageType.ERROR);
                 receivers.add(msg.getSender());
-                msg.setSender(msg.getReceiver());
+                msg.setSender("server");
                 break;
         }
 

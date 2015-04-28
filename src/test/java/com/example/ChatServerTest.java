@@ -91,7 +91,7 @@ public class ChatServerTest {
         server.addOnlineUsers("user02", null);
         server.addOnlineUsers("otherUser", null);
 
-        Message msg = new Message("sender", "server", "user0", Message.MessageType.SEARCH);
+        Message msg = new Message("sender", "receiver", "user0", Message.MessageType.SEARCH);
 
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
 
@@ -107,7 +107,7 @@ public class ChatServerTest {
     @Test
     public void searchEmptyResultsMessageTest() {
 
-        Message msg = new Message("sender", "server", "user01", Message.MessageType.SEARCH);
+        Message msg = new Message("sender", "receiver", "user01", Message.MessageType.SEARCH);
 
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
 
@@ -305,7 +305,7 @@ public class ChatServerTest {
     }
 
     @Test
-    public void invalidDirectMessageTest() {
+         public void invalidDirectMessageTest() {
         Message msg = new Message("sender", "receiver", "Hola", Message.MessageType.TEXT);
 
         ArrayList<Message> responses = server.getMessagesToSend(null, msg);
@@ -318,4 +318,39 @@ public class ChatServerTest {
         Assert.assertEquals(Message.MessageType.ERROR, responses.get(0).getMessageType());
 
     }
+
+    @Test
+    public void emptyMessageTest() {
+        Message msg = new Message();
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(1, responses.size());
+
+        Assert.assertEquals("server", responses.get(0).getSender());
+        Assert.assertEquals(null, responses.get(0).getReceiver());
+        Assert.assertEquals("Something bad happened.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.ERROR, responses.get(0).getMessageType());
+
+    }
+
+    @Test
+    public void directMessageToMyselfTest() {
+
+        server.addToContactsList("sender", "receiver");
+
+        Message msg = new Message("sender", "sender", "Hola", Message.MessageType.TEXT);
+
+        ArrayList<Message> responses = server.getMessagesToSend(null, msg);
+
+        Assert.assertEquals(1, responses.size());
+
+        Assert.assertEquals("sender", responses.get(0).getSender());
+        Assert.assertEquals("sender", responses.get(0).getReceiver());
+        Assert.assertEquals("Something bad happened.", responses.get(0).getContent());
+        Assert.assertEquals(Message.MessageType.ERROR, responses.get(0).getMessageType());
+
+    }
+
 }
+
