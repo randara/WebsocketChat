@@ -33,7 +33,7 @@ public class ChatUtils {
 
     }
 
-    public static ArrayList<Message> prepareResponses(Message in, List<String> receivers){
+    public static ArrayList<Message> prepareResponses(Message in, ArrayList<String> receivers){
 
         ArrayList<Message> out = new ArrayList<>();
         Message temp;
